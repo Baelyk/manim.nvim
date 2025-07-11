@@ -1,6 +1,6 @@
 # manim.nvim
 
-A small plugin that creates two commands to render Manim scenes:
+A small plugin that creates two commands to render Manim scenes.
 - `ManimRender`: render a specified scene or all scenes (default) with specified quality
     - Accepts two args:
         - the scene name or `all scenes` (default)
@@ -12,15 +12,15 @@ A small plugin that creates two commands to render Manim scenes:
 
 Example configuration using `lazy.nvim`:
 ```lua
-	{
-		"Baelyk/manim.nvim",
-		ft = "python",
-		config = function()
-			require("manim")
-			vim.keymap.set("n", "<leader>ll", vim.cmd.ManimRenderUnderCursor)
-			vim.keymap.set("n", "<leader>lm", function() vim.cmd.ManimRenderUnderCursor("m") end)
-			vim.keymap.set("n", "<leader>lh", function() vim.cmd.ManimRenderUnderCursor("h") end)
-			vim.keymap.set("n", "<leader>la", vim.cmd.ManimRender)
-		end
-	}
+{
+    "Baelyk/manim.nvim",
+    ft = "python",
+    config = function()
+        require("manim")
+        vim.keymap.set("n", "<leader>ll", vim.cmd.ManimRenderUnderCursor)
+        vim.keymap.set("n", "<leader>lm", function() vim.cmd.ManimRenderUnderCursor("m") end)
+        vim.keymap.set("n", "<leader>lh", function() vim.cmd.ManimRenderUnderCursor("h") end)
+        vim.keymap.set("n", "<leader>la", vim.cmd.ManimRender)
+    end
+}
 ```
