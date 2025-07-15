@@ -1,5 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "runtime.version": "LuaJIT",
-  "workspace.library": ["$VIMRUNTIME", "${3rd}/luv/library"]
+  "diagnostics.globals": ["mp"],
+  "workspace.library": ["$VIMRUNTIME", "${3rd}/luv/library", "$MPV_LUA_SOURCE"]
 }
