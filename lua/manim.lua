@@ -158,6 +158,10 @@ function M.setup()
 	for quality, name in pairs(qualities) do
 		vim.api.nvim_create_user_command("ManimRenderUnderCursor" .. name, manim_render_under_cursor(quality), {})
 	end
+
+	vim.api.nvim_create_user_command("ManimMpv", function()
+		require("mpv")
+	end, {})
 end
 
 return M
