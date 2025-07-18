@@ -1,5 +1,6 @@
 ---@alias Quality "l"|"m"|"h"|"p"|"k"
-local qualities = { l = "Low", m = "Medium", h = "High", p = "1440", k = "4k" }
+local quality_command_names = { l = "Low", m = "Medium", h = "High", p = "1440", k = "4k" }
+local qualities = { l = "480p15", m = "720p30", h = "1080p60", p = "1440p60", k = "2880p60" }
 
 ---Wrapper around `vim.notify`
 ---@param msg string
@@ -59,6 +60,22 @@ local function scenes_in_buf(bufnr)
 	return scenes
 end
 
+local function scene_paths(file_name, quality, scenes, media_dir)
+	if not media_dir then
+		media_dir = "media"
+	end
+	local paths = {}
+	for _, scene in ipairs(scenes) do
+		table.insert(paths, media_dir .. "/videos/" .. file_name .. "/" .. qualities[quality] .. "/" .. scene .. ".mp4")
+	end
+	return paths
+end
+
+local function preview(paths, quality)
+	local mpv = require("mpv")
+	mpv.play_files(paths, qualities[quality])
+end
+
 ---Run `manim render`
 ---@param quality Quality
 ---@param scenes table<string>
@@ -74,13 +91,17 @@ local function render(quality, scenes)
 		scene_name = #scenes .. " scenes"
 	end
 
+	local file_name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t:r")
 	local on_exit = function(out)
 		if out.code ~= 0 then
 			notify(out.stdout, vim.log.levels.ERROR)
 		else
 			notify("Rendered " .. scene_name, nil, "render")
+			local paths = scene_paths(file_name, quality, scenes)
+			preview(paths, quality)
 		end
 	end
+
 	local command = { "manim", "render", "--quality", quality, path }
 	for _, s in ipairs(scenes) do
 		table.insert(command, s)
@@ -150,18 +171,14 @@ local M = {}
 
 function M.setup()
 	-- Render all scenes or a specified scene
-	for quality, name in pairs(qualities) do
+	for quality, name in pairs(quality_command_names) do
 		vim.api.nvim_create_user_command("ManimRender" .. name, manim_render(quality), manim_render_completion)
 	end
 
 	-- Render the scene under the cursor
-	for quality, name in pairs(qualities) do
+	for quality, name in pairs(quality_command_names) do
 		vim.api.nvim_create_user_command("ManimRenderUnderCursor" .. name, manim_render_under_cursor(quality), {})
 	end
-
-	vim.api.nvim_create_user_command("ManimMpv", function()
-		require("mpv")
-	end, {})
 end
 
 return M
